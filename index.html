@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title id="tab">Math Logic</title>
+    <style>
+        * {
+            font-family: Arial, Helvetica, sans-serif;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .form {
+            display: block;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        label {
+            margin-bottom: 8px;
+        }
+
+        input {
+            margin-bottom: 12px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            text-align: center;
+        }
+
+        th, td {
+            border: 1px solid black;
+            padding-left: 25px;
+            padding-right: 25px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Math Logic</h1>
+    <section class="form">
+        <label for="p">p =</label>
+        <input id="p" type="text" placeholder="T or F"><br>
+        <label for="q">q =</label>
+        <input id="q" type="text" placeholder="T or F"><br>
+        <label for="r">r =</label>
+        <input id="r" type="text" placeholder="T or F"><br>
+        <button id="submit">Submit</button>
+    </section>
+    <br>
+    <section class="table">
+        <table border="3" id="display">
+            <tr>
+                <td>Basta ayan</td>
+                <td>p</td>
+                <td>q</td>
+                <td>r</td>
+                <td>~p</td>
+                <td>q ^ r</td>
+                <td>(~p) v (q ^ r)</td>
+            </tr>
+            <tr>
+                <td>Example:</td>
+                <td>F</td>
+                <td>T</td>
+                <td>F</td>
+                <td>T</td>
+                <td>F</td>
+                <td>T</td>
+            </tr>
+        </table>
+    </section>
+</body>
+<script>
+let del = 1;
+
+document.getElementById('submit').addEventListener('click', () => {
+    const valid = {
+        true: ['1', 'T', 't', 'true'],
+        false: ['0', 'F', 'f', 'false']
+    }
+    const p = document.getElementById('p').value;
+    const q = document.getElementById('q').value;
+    const r = document.getElementById('r').value;
+    const values = [p,q,r];
+    const validate = values.map(value => {
+    const hasThis = valid.true.concat(valid.false);
+    return hasThis.includes(value);
+    });
+    if(!(validate.every(value => value))){
+        alert('Input is not Valid');
+        return
+    }
+    const fixed = values.map(value => {
+        for (const key in valid) {
+            if (valid[key].includes(value.toLowerCase())) {
+                return key === 'true';
+            }
+        }
+        return false;
+    });
+    const newElem = document.createElement('tr');
+    newElem.setAttribute('id', `row-${del}`);
+    newElem.innerHTML = `
+    <td><button id="del${del}" onclick="deleteRow(${del})">Delete</button></td>
+    <td>${p}</td>
+    <td>${q}</td>
+    <td>${r}</td>
+    <td>${!fixed[0]}</td>
+    <td>${fixed[1] && fixed[2]}</td>
+    <td>${(!fixed[0]) || (fixed[1] && fixed[2])}</td>
+    `;
+    document.getElementById('display').appendChild(newElem);
+    del++;
+});
+
+function deleteRow(rowId) {
+    const rowToRemove = document.getElementById(`row-${rowId}`);
+    rowToRemove.remove();
+}
+</script>
+</html>
